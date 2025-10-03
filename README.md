@@ -16,8 +16,7 @@ This was created to make enrollment guidance more accessible and fun with a conv
 ---
 
 ## 🚀 Demo
-![screenshot](docs/screenshot.png)  
-*(Replace this with your screenshot — see below 👇)*
+![screenshot](screenshot.png.png)  
 
 ---
 
