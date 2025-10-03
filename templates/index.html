@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UCSD Enrollment Chatbot 🐬</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="chat-wrapper">
+    <div class="chat-header">
+      <h2>UCSD Enrollment Chatbot 🐬</h2>
+    </div>
+    <div id="chatbox" class="chatbox"></div>
+    <form id="chat-form" class="chat-input">
+      <input type="text" id="user-input" placeholder="Ask about pass times, units, or prerequisites...">
+      <button type="submit">➤</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("chat-form");
+    const chatbox = document.getElementById("chatbox");
+
+    function addMessage(message, sender) {
+      const div = document.createElement("div");
+      div.className = `message ${sender}-message fade-in`;
+      div.innerText = message;
+      chatbox.appendChild(div);
+      chatbox.scrollTo({ top: chatbox.scrollHeight, behavior: 'smooth' });
+    }
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const input = document.getElementById("user-input");
+      const userMessage = input.value.trim();
+      if (!userMessage) return;
+
+      addMessage(userMessage, "user");
+
+      // Typing indicator
+      const typingDiv = document.createElement("div");
+      typingDiv.className = "message bot-message typing";
+      typingDiv.innerText = "Typing...";
+      chatbox.appendChild(typingDiv);
+      chatbox.scrollTo({ top: chatbox.scrollHeight, behavior: 'smooth' });
+
+      const response = await fetch("/get", {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: "message=" + encodeURIComponent(userMessage)
+      });
+      const botMessage = await response.text();
+
+      typingDiv.remove();
+      addMessage(botMessage, "bot");
+      input.value = "";
+    };
+
+    window.onload = () => {
+      setTimeout(() => {
+        addMessage("👋 Hi Triton! I’m here to help with UCSD enrollment. Ask me about pass times, units, or prerequisites!", "bot");
+      }, 300);
+    };
+  </script>
+</body>
+</html>
